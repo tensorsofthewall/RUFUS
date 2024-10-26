@@ -7,9 +7,11 @@ Disclaimer: This project was developed as a solution to a timed case study by Ch
 # Features
 
 - Intelligent Web Scraping: Extract structured data from websites effortlessly.
-- Seamless RAG Integration: Works smoothly with RAG pipelines for improved data retrieval.
+- Scalable and Flexible: Modular architecture allows for easy integration and extension of components without extensive refactoring.
+- Content Ranking: Determines the importance of documents and ranks them accordingly, allowing for highly tuned, relevant document retrieval.
+- Seamless RAG Integration: Plug-and-Play tool with RAG pipelines for improved data retrieval.
 - Customizable Configs: Tailor extraction rules with YAML configuration files.
-- Efficient & Scalable: Handles recursive URL traces with optimized scraping algorithms.
+- Efficient: Handles recursive URL traces with optimized scraping algorithms.
 
 # How does RUFUS work?
 RUFUS primarily works on web scraping through recursive HTML scraping from the user-provided URL. Users can configure the maximum depth i.e. the number of nested links that should be opened from the starter URL, along with several other parameters. These configurations can be stored in YAML and provided to the RufusClient API. 
@@ -29,7 +31,29 @@ My approach to building RUFUS was centered around creating a modular and scalabl
 # Challenges and Solutions
 During the development of RUFUS, I faced some challenges:
 - **Asynchronous Execution**: To achieve high performance and scalability, RUFUS needs to execute tasks asynchronously. To achieve this, I used the `asyncio` and `aiohttp` libraries to create a non-blocking, event-driven architecture that allows RUFUS to handle multiple tasks concurrently.
-- **Efficiency**: With large volumes of data, efficiency becomes a major concern, both in terms of execution time and memory. I chose to use `aiohttp` and `requests` libraries wherever possible, making a trade-off with the simplicity of using `Selenium`.
+- **Efficiency**: With large volumes of data, efficiency becomes a major concern, both in terms of execution time and memory. I chose to use `aiohttp` and `requests` libraries, making a trade-off with the simplicity of using `Selenium`.
+- **Concurrency**: To manage the crawling process and prevent overwhelming the system with concurrent requests, I used semaphores to limit the number of concurrent crawling tasks while ensuring synchronization between parallel tasks. 
+
+# RUFUS in RAG pipelines
+Rufus is designed to be a plug-and-play tool in RAG pipelines. The main interface for users is the `RufusClient`, which orchestrates the entire process of scraping URLs:
+- **Initialization**: Accepts several configuration parameters, all detailed in [config.yaml](./config.yaml)
+- **Scrape**: This method accepts the start URL and a user prompt, along with other configuration parameters (LLM model parameters, ranker model parameters,search engine preferences) and returns the relevant documents. It encapsulates the entire process of retrieval, ranking and structuring data.
+
+**Usage**:
+```python
+from rufus import RufusClient
+from rufus.utils import load_config
+
+config = load_config("config.yaml")
+
+client = RufusClient(**config)
+
+start_url = "https://www.apple.com"
+prompt = "List all the services and products offered by Apple."
+
+docs = client.scrape(start_url, prompt, **config)
+```
+
 
 # Project Structure
 - rufus/ - Main module containing several submodules.
@@ -68,4 +92,4 @@ python example.py
 Modify config.yaml to set up your configuration parameters, LLMs for search query generation and other parameters. RUFUS currently support the Google Gemini API, giving you access to Google Gemini LLMs and Embedding models.
 
 # License
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE.md) file for details.
