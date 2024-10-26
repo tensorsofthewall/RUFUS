@@ -1,10 +1,8 @@
 # Utility functions for RUFUS
 import logging
-import torch
 import numpy as np
 from urllib.parse import urlparse
 import aiohttp, asyncio
-from googlesearch import search
 
 # Set up logging for RUFUS
 def setup_logging(log_file="rufus.log", level="DEBUG"):
@@ -67,33 +65,6 @@ async def persistent_request(url, session=None, retries=3, delay=1.5, headers=No
     logger.error(f"All {attempts} attempts failed for {url}")
     return None
 
-# Compute similarity
-def compute_similarity(model, ref_txt, candidate_txt, similarity_metric="cosine"):
-    # Compute similarity
-    ref_embeddings = model.encode(ref_txt, convert_to_tensor=True)
-    candidate_embeddings = model.encode(candidate_txt, convert_to_tensor=True)
-    
-    # Run operations based on device used by embedding model
-    if model.device.type == "cuda":
-        # For GPU-optimized operations
-        if similarity_metric == "cosine":
-            similarity_func = torch.nn.functional.cosine_similarity
-        elif similarity_metric == "euclidean":
-            similarity_func = torch.nn.functional.pairwise_distance
-        else:
-            raise ValueError(f"Unknown similarity metric: {similarity_metric}")
-    elif model.device.type == "cpu":
-        # For CPU-optimized operations
-        if similarity_metric == "cosine":
-            similarity_func = cosine_similarity
-        elif similarity_metric == "euclidean":
-            similarity_func = pairwise_distance
-        else:
-            raise ValueError(f"Unknown similarity metric: {similarity_metric}")
-    
-    similarity = similarity_func(ref_embeddings, candidate_embeddings)
-    
-    return similarity
 
 
 # Cosine similarity computation using Numpy, works better than PyTorch on CPU tensors/arrays

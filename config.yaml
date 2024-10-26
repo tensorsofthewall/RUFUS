@@ -1,3 +1,7 @@
 llm_api_key: "YOUR_GOOGLE_GEMINI_API_KEY"
 llm_provider: "google"
-llm_name: "gemini-1.5-flash"
+llm_name: "models/gemini-1.5-flash-latest"
+
+embd_model_api_key: "YOUR_GOOGLE_GEMINI_API_KEY"
+embd_model_provider: "google"
+embd_model_name: "models/text-embedding-004"
