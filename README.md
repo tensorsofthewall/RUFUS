@@ -32,7 +32,6 @@ During the development of RUFUS, I faced some challenges:
 - **Efficiency**: With large volumes of data, efficiency becomes a major concern, both in terms of execution time and memory. I chose to use `aiohttp` and `requests` libraries wherever possible, making a trade-off with the simplicity of using `Selenium`.
 
 # Project Structure
-- 
 - rufus/ - Main module containing several submodules.
     - core/
     - llms/
