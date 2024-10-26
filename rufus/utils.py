@@ -2,9 +2,9 @@
 import logging
 import torch
 import numpy as np
-import requests
-import time
+from urllib.parse import urlparse
 import aiohttp, asyncio
+from googlesearch import search
 
 # Set up logging for RUFUS
 def setup_logging(log_file="rufus.log", level="DEBUG"):
@@ -24,30 +24,24 @@ def setup_logging(log_file="rufus.log", level="DEBUG"):
     
     logger = logging.getLogger("RUFUSLogger")
     return logger
-
-# Request method for handling retries
-# def persistent_request(url, session=None, retries=3, delay=1.5, headers=None, timeout=5, logger=None):
-#     """Attempts to fetch the content of a webpage using a GET request, using a requests.Session object if provided"""
-#     if logger is None:
-#         logger = logging.getLogger("RUFUSLogger")
     
-#     attempts = 0
-#     while attempts < retries:
-#         try:
-#             if session:
-#                 response = session.get(url, headers=headers, timeout=timeout)
-#             else:
-#                 response = requests.get(url, headers=headers, timeout=timeout)
-#             response.raise_for_status()
-#             return response.text
-#         except requests.RequestException as e:
-#             attempts += 1
-#             logger.warning(f"Attempt {attempts} for {url} failed: {e}")
-#             time.sleep(delay)
-#     logger.error(f"All {attempts} attemps failed for {url}")
-#     return None
-    
+# Method to check to URL validity and formatting
+def is_valid_url(url):
+    """Check if the URL is valid and properly formatted."""
+    parsed_url = urlparse(url)
+    return bool(parsed_url.scheme in ["http", "https"] and parsed_url.netloc)
 
+# Async bool method to check if a URL is online
+async def is_url_online(url, timeout=5):
+    """Check if the URL is online by sending a HEAD request."""
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.head(url, timeout=timeout) as response:
+                return response.status == 200
+    except (aiohttp.ClientError, asyncio.TimeoutError):
+        return False
+
+# Async method for handling retries in requests
 async def persistent_request(url, session=None, retries=3, delay=1.5, headers=None, timeout=5, logger=None):
     """Attempts to fetch the content of a webpage using an async GET request, using an aiohttp.ClientSession object if provided."""
     if logger is None:
