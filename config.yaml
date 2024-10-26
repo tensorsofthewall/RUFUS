@@ -11,12 +11,12 @@ timeout: 60
 # headers: None (Optional)
 
 # LLM Configuration for search query generation
-llm_api_key: "AIzaSyCt72QY6V6zkIz-qQo9Q8kh02LHKEo4wKc"
+llm_api_key: "YOUR GOOGLE GEMINI API KEY"
 llm_provider: "google"
 llm_name: "models/gemini-1.5-flash-latest"
 
 # Embedding Model (Ranker) Configuration
-embd_model_api_key: "AIzaSyCt72QY6V6zkIz-qQo9Q8kh02LHKEo4wKc"
+embd_model_api_key: "YOUR GOOGLE GEMINI API KEY"
 embd_model_provider: "google"
 embd_model_name: "models/text-embedding-004"
 
