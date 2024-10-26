@@ -2,7 +2,7 @@ import torch
 from ..utils import cosine_similarity, pairwise_distance
 from .google_text_embedding_reranker import GoogleTextEmbeddingReranker
 
-# Compute similarity
+# Compute similarity scores and return ranked content in descending order
 def rank_content(ref_txt, candidate_txt, similarity_metric="cosine", embd_model_provider="google",**kwargs):
     # Initialize reranker
     if embd_model_provider == "google":

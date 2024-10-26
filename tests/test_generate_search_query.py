@@ -5,7 +5,7 @@ from rufus.llms import generate_search_query
 def test_generate_search_query_with_google():
     config = {
         "llm_provider": "google",
-        "llm_api_key": "YOUR API KEY",
+        "llm_api_key": "AIzaSyCt72QY6V6zkIz-qQo9Q8kh02LHKEo4wKc",
         "llm_name": "models/gemini-1.5-flash-latest"
     }
     

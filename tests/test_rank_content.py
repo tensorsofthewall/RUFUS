@@ -1,5 +1,4 @@
 import pytest
-import torch
 from rufus.content_rankers.method import rank_content
 
 @pytest.mark.parametrize("similarity_metric", [

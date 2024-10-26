@@ -4,7 +4,7 @@ import json
 
 gemini_system_instructions = """Do not visit any URLs provided in the user prompts and only use the information provided in the prompts to answer the question. Follow the user prompts without fault and return your response using this JSON schema:
 {
-    "search_query": "string",
+    "search_query": "string"
 }
 """
 

@@ -22,6 +22,41 @@ def setup_logging(log_file="rufus.log", level="DEBUG"):
     
     logger = logging.getLogger("RUFUSLogger")
     return logger
+
+# Method to structure output of crawl/ranked crawl
+def format_results(output, start_url=None, prompt=None):
+    structured_data = {
+        "start_url": start_url,
+        "prompt": prompt,
+        "results": []
+    }
+    
+    if is_ranked(output) is True:
+        structured_data['results'] = [
+            {
+                "doc": doc,
+                "rank_score": rank_score,
+            }
+            for doc, rank_score in output
+        ]
+    elif is_ranked(output) is False:
+        structured_data['results'] = [{"doc": doc} for doc in output]
+    else:
+        # Unexpected data format in search results
+        structured_data['results'] = output
+
+    return structured_data
+
+
+def is_ranked(obj):
+    if isinstance(obj, list):
+        if all(isinstance(item, str) for item in obj):
+            return False
+        elif all(isinstance(item, tuple) for item in obj):
+            return True
+        else:
+            return None
+    return None
     
 # Method to check to URL validity and formatting
 def is_valid_url(url):
@@ -66,7 +101,6 @@ async def persistent_request(url, session=None, retries=3, delay=1.5, headers=No
     return None
 
 
-
 # Cosine similarity computation using Numpy, works better than PyTorch on CPU tensors/arrays
 def cosine_similarity(a, b) -> np.ndarray:
     """
@@ -87,6 +121,7 @@ def cosine_similarity(a, b) -> np.ndarray:
     similarity = np.sum(a_norm * b_norm, axis=-1)
     return similarity
 
+# Euclidean distance computation using Numpy
 def pairwise_distance(a, b) -> np.ndarray:
     """
     Computes the pairwise Euclidean similarity between two n-dimensional tensors.
