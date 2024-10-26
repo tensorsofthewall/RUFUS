@@ -10,13 +10,14 @@ from rufus.content_rankers import rank_content
 from rufus.utils import setup_logging, persistent_request, is_valid_url, is_url_online, format_results
 
 class Crawler:
-    def __init__(self, max_depth=2, delay=1.5, log_file="rufus.log", log_level="DEBUG", headers=None, num_search_results=10):
+    def __init__(self, max_depth=2, delay=1.5, log_file="rufus.log", log_level="DEBUG", headers=None, num_search_results=10, **kwargs):
         self.url_tracker = set()
         self.max_depth = max_depth
         self.request_delay = delay # Delay between consequtive requests in seconds
         self.logger = setup_logging(log_file=log_file, level=log_level)
         self.headers = headers # Option to add headers to requests
         self.num_search_results = num_search_results
+        self.timeout = kwargs.get("timeout", 5)
         
     # Asynchronous page fetch method 
     async def _fetch_page(self, url, session, retries=3):
@@ -26,7 +27,8 @@ class Crawler:
             retries=retries,
             delay=self.request_delay,
             logger=self.logger,
-            headers=self.headers
+            headers=self.headers, 
+            timeout=self.timeout
         )
     
     # Validate url
@@ -85,7 +87,7 @@ class Crawler:
             self.logger.error(f"Invalid URL: {start_url}")
             query = generate_search_query(prompt, start_url)
             self.logger.info(f"Generated Google Search query: {query}")
-            search_results = get_search_results(query, self.num_search_results)
+            search_results = get_search_results(query, self.num_search_results, **kwargs)
             self.logger.info(f"Using Google search results: {search_results}")
         else:
             is_online = await self._check_url_online(start_url)
@@ -93,7 +95,7 @@ class Crawler:
                 self.logger.error(f"URL is not online: {start_url}")
                 query = generate_search_query(prompt, start_url)
                 self.logger.info(f"Generated Google Search query: {query}")
-                search_results = get_search_results(query, self.num_search_results)
+                search_results = get_search_results(query, self.num_search_results, **kwargs)
                 self.logger.info(f"Using Google search results: {search_results}")
             else:
                 search_results = [start_url]

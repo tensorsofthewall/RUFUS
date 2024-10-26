@@ -3,6 +3,7 @@ import logging
 import numpy as np
 from urllib.parse import urlparse
 import aiohttp, asyncio
+import yaml, json
 
 # Set up logging for RUFUS
 def setup_logging(log_file="rufus.log", level="DEBUG"):
@@ -47,6 +48,36 @@ def format_results(output, start_url=None, prompt=None):
 
     return structured_data
 
+
+# Load YAML Config File
+def load_config(filename="config.yaml"):
+    """Load YAML config file."""
+    try:
+        with open(filename, 'r') as stream:
+            config = yaml.safe_load(stream)
+        return config
+    except FileNotFoundError:
+        print(f"Error: Config file not found: {filename}")
+        return {}
+    except yaml.YAMLError as exc:
+        print(f"Error reading config file '{filename}': {exc}")
+        return {}
+    
+# Save output to JSON
+def save_dict_to_json(data, filename="data.json"):
+    """
+    Save a dictionary to a JSON file.
+
+    Args:
+        data (dict): The dictionary to save.
+        filename (str): The name of the JSON file to save to.
+    """
+    try:
+        with open(filename, "w") as json_file:
+            json.dump(data, json_file, indent=4)
+        print(f"Dictionary successfully saved to '{filename}'")
+    except (IOError, TypeError) as e:
+        print(f"Error saving dictionary to JSON file: {e}")
 
 def is_ranked(obj):
     if isinstance(obj, list):
