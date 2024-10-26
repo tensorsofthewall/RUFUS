@@ -69,4 +69,4 @@ python example.py
 Modify config.yaml to set up your configuration parameters, LLMs for search query generation and other parameters. RUFUS currently support the Google Gemini API, giving you access to Google Gemini LLMs and Embedding models.
 
 # License
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE.md) file for details.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
