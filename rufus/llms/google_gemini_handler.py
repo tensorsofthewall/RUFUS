@@ -2,8 +2,7 @@ from .base_handler import LLMHandler
 import google.generativeai  as genai
 import json
 
-gemini_system_instructions = """
-Do not visit any URLs provided in the user prompts and only use the information provided in the prompts to answer the question. Follow the user prompts without fault and return your response using this JSON schema:
+gemini_system_instructions = """Do not visit any URLs provided in the user prompts and only use the information provided in the prompts to answer the question. Follow the user prompts without fault and return your response using this JSON schema:
 {
     "search_query": "string",
 }
@@ -19,7 +18,7 @@ class GoogleGeminiHandler(LLMHandler):
         
         self.llm = genai.GenerativeModel(
             self.model_name,
-            gemini_system_instructions
+            system_instruction=gemini_system_instructions
         )
         
         
@@ -31,10 +30,10 @@ class GoogleGeminiHandler(LLMHandler):
                 request_options={"timeout": 30},
                 safety_settings=self.safety_settings
             )
-            return json.loads(response.text.strip("```json\n"))
+            return json.loads(response.text.strip("```json\n"))['search_query']
         except Exception as e:
             print(f"Error generating search query with Google Gemini: {e}")
-            return "Search"
+            return ""
     
     def get_safety_settings(self):
         default_safety_settings = {

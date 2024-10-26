@@ -1,10 +1,10 @@
 import aiohttp
 import asyncio
-import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from ..llms.method import generate_search_query, get_google_search_results
-from ..utils import setup_logging, persistent_request, is_valid_url, is_url_online
+from rufus.llms.method import generate_search_query
+from rufus.search_engines import get_search_results
+from rufus.utils import setup_logging, persistent_request, is_valid_url, is_url_online
 
 class Crawler:
     def __init__(self, max_depth=2, delay=1.5, log_file="rufus.log", log_level="DEBUG", headers=None, num_search_results=10):
@@ -80,7 +80,7 @@ class Crawler:
             self.logger.error(f"Invalid URL: {start_url}")
             query = generate_search_query(prompt, start_url)
             self.logger.info(f"Generated Google Search query: {query}")
-            search_results = get_google_search_results(query, self.num_search_results)
+            search_results = get_search_results(query, self.num_search_results)
             self.logger.info(f"Using Google search results: {search_results}")
         else:
             is_online = await self.check_url_online(start_url)
@@ -88,7 +88,7 @@ class Crawler:
                 self.logger.error(f"URL is not online: {start_url}")
                 query = generate_search_query(prompt, start_url)
                 self.logger.info(f"Generated Google Search query: {query}")
-                search_results = get_google_search_results(query, self.num_search_results)
+                search_results = get_search_results(query, self.num_search_results)
                 self.logger.info(f"Using Google search results: {search_results}")
             else:
                 search_results = [start_url]

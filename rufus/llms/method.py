@@ -10,7 +10,7 @@ def generate_search_query(prompt, url, llm_provider="google", **kwargs):
             -- Gemini Pro
     """
     if llm_provider == "google":
-        handler = GoogleGeminiHandler(api_key=kwargs.get("api_key"), model_name=kwargs.get("model_name"))
+        handler = GoogleGeminiHandler(api_key=kwargs.get("llm_api_key"), model_name=kwargs.get("llm_name"))
     else:
         raise ValueError(f"Unsupported LLM provider: {llm_provider}")
     
